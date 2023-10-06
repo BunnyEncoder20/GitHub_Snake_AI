@@ -7,6 +7,9 @@ from snake_game import SnakeGameAI, Direction, Point
 # importing this after making the skeleton for the model.py
 from model import LinearQNet, QTrainer
 
+# importing after creating the helper.py (for plotting the results)
+from helper import plot
+
 MAX_MEMORY = 100_000
 BATCH_SIZE = 1000
 LR = 0.001 # Learning Rate 
@@ -144,7 +147,11 @@ def train() :
 
             print('Game',agent.n_games, 'Score : ', score, 'highscore : ', record)
 
-            # To DO : plotting the results 
+            plot_scores.append(score)
+            total_score += score 
+            mean_score = total_score / agent.n_games
+            plot_mean_scores.append(mean_score)
+            plot(plot_scores, plot_mean_scores)
 
 if __name__ == '__main__' : 
     train()
