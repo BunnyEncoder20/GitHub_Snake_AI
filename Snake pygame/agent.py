@@ -93,18 +93,24 @@ class Agent :
 
     def get_action(self, state) : 
         # Doing some random moves : trade-off between exploration and exploitation 
-        self.epsilon = 80-self.n_games
+        self.epsilon = 80 - self.n_games
         final_move = [0,0,0]
 
         # This way the value of epsilon will keep decreasing with the increase in number of games , thus there will be lesser random moves 
         if random.randint(0,200) < self.epsilon : 
-            move = random.randint(0,2)
+            move = random.randint(0, 2)
             final_move[move] = 1
+
+            action = final_move
         else : 
             state0 = torch.tensor(state, dtype=torch.float)
             prediction = self.model(state0)
             move = torch.argmax(prediction).item()
             final_move[move] = 1 
+
+            action = final_move
+        
+        return action
 
 
 def train() :
@@ -130,14 +136,14 @@ def train() :
         # train the short memory of the agent 
         agent.train_short_memory(state_old, final_move, reward, state_new, done)
 
-        # remember the above and store it to remember it 
+        # to remember the above , store it in memory
         agent.remember(state_old, final_move, reward, state_new, done)
 
         if done : 
             # Train the long memory (replay memory or exprience memory). Retrains on the moves taken during the previously completed game 
             # also want to plot the results 
             game.reset()
-            agent.n_games+=1
+            agent.n_games += 1
             agent.train_long_memory()
 
             # checking for a new highscore 
@@ -145,7 +151,7 @@ def train() :
                 record = score
                 agent.model.save()
 
-            print('Game',agent.n_games, 'Score : ', score, 'highscore : ', record)
+            print('Game',agent.n_games, '\nScore :', score, '\nhighscore :', record)
 
             plot_scores.append(score)
             total_score += score 

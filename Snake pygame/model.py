@@ -66,7 +66,7 @@ class QTrainer :
             if not done[idx] : 
                 Q_new = reward[idx] + self.gamma * torch.max(self.model(next_state[idx]))
 
-            target[idx][torch.argmax(action).item()] = Q_new
+            target[idx][torch.argmax(action[idx]).item()] = Q_new
 
         
         # Creating the loss function  
